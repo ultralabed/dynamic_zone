@@ -25,8 +25,7 @@ describe('app', function() {
     		mapSet = true;
     	}
     }];
-    var deletedZone = deletedZoneFromList(zoneList, zoneId);
-    deletePolygon(deletedZone);
+    deletePolygonFromList(zoneList, zoneId);
     expect(mapSet).to.equal(true);
   });
 

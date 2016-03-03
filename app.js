@@ -5,13 +5,22 @@ var drawingManager;
 var initialize = function() {
   var myLatlng = new google.maps.LatLng(40.9403762, -74.1318096);
   var myOptions = {
-    zoom: 13,
+    zoom: 14,
     center: myLatlng,
     mapTypeId: google.maps.MapTypeId.ROADMAP}
   map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 }
 
-var polygonInitialize = function(zone) {
+var polygonInitialize = function(zoneId) {
+  if(typeof drawingManager === "undefined") {
+
+  }
+  else {
+    console.log(drawingManager);
+    drawingManager.setMap(null); //clear previous drawing tool
+    deletePolygonFromList(polygonArray, zoneId);
+    deletedZoneFromList(polygonArray, zoneId);
+  }
   drawingManager = new google.maps.drawing.DrawingManager({
     drawingMode: google.maps.drawing.OverlayType.POLYGON,
       drawingControl: true,
@@ -35,11 +44,11 @@ var polygonInitialize = function(zone) {
   google.maps.event.addListener(drawingManager, "overlaycomplete", function(event){
       // console.log("123");
       var polygon = event.overlay;
-      polygon.zone = zone; //Add polygon with cutom zone id.
+      polygon.zoneId = zoneId; //Add polygon with cutom zoneId id.
       // polygonClick(polygon);
 
       polygonArray.push(polygon);
-      var vertices = "#" + zone + "_vertices";
+      var vertices = "#" + zoneId + "_vertices";
       $(vertices).val(event.overlay.getPath().getArray());
       console.log(polygonArray);
       drawingManager.setMap(null);
@@ -51,7 +60,7 @@ var polygonInitialize = function(zone) {
        this.setOptions({fillColor: "#FF0000"});
       });
       google.maps.event.addListener(polygon, 'click', function (){
-        console.log(polygon.zone);
+        console.log(polygon.zoneId);
       });
   });
 }
@@ -60,7 +69,7 @@ var polygonInitialize = function(zone) {
 
   jQuery(document).ready(function($) {
     var hightPolygon = function(selectedTrID) {
-      console.log(selectedTrID);
+      // console.log(selectedTrID);
       if (0 < polygonArray.length) {
         for (var i = 0; i < polygonArray.length; i++) {
           if(polygonArray[i].zone === selectedTrID){
@@ -92,40 +101,17 @@ var polygonInitialize = function(zone) {
     });
 
     $("#zoneListTable").delegate(".zoneDrawBtn", "click", function(e) {
-        var zoneId = $(this).closest('tr').attr('id')
+        var zoneId = $(this).closest('tr').attr('id');
         polygonInitialize(zoneId);
     });
 
     $("#zoneListTable").delegate(".zoneDeleteBtn", "click", function(e) {
         var selectedTrID = $(this)[0].id;
         var zoneId = $(this).closest('tr').attr('id');
-        var deletedZone = deletedZoneFromList(polygonArray, zoneId);
-        deletePolygon(deletedZone);
+        deletePolygonFromList(polygonArray, zoneId);
+        deletedZoneFromList(polygonArray, zoneId);
         $('#'+zoneId).remove();
-
-    });
-
-    $('#save').click(function(){
-        //iterate polygon zone1_vertices?
-    });
-
-    $('#zone1_delete').click(function(){
-
-    });
-
-    $('#zone2_delete').click(function(){
-      var zoneId = 'zone2';
-      var deletedZone = deletedZoneFromList(polygonArray, zoneId);
-      deletePolygon(deletedZone);
-      $('#zone2').attr("disabled", false);
-      $('#zone2_fee').val(null);
-      $('#zone2_vertices').val(null);
-    });
-
-    $('#zone2').click(function(){
-        polygonInitialize('zone2');
-        $('#zone1').attr("disabled", false);
-        $('#zone2').attr("disabled", true);
+        console.log(polygonArray);
     });
 
     $(".clickable-row").click(function() {

@@ -1,16 +1,22 @@
 var deletedZoneFromList = function(zoneList, zoneId) {
-	var index = zoneList.findIndex(function(zone) {
-		return zone.zoneId === zoneId;
+	// var index = zoneList.findIndex(function(zone) {
+	// 	return zone.zoneId === zoneId;
+	// });
+	// return zoneList.splice(index, 1)[0];
+
+
+	zoneList.forEach(function(zone, i) {
+		if(zone.zoneId === zoneId){
+      zoneList.splice(i, 1)[0];
+	  }
 	});
-	return zoneList.splice(index, 1)[0];
 }
 
-var deletePolygon = function(zone) {
-	console.log(zone);
-	if(typeof zone === "undefined"){
-	}
-	else{
-		zone.setMap();
-	}
+var deletePolygonFromList = function(zoneList, zoneId) {
+	zoneList.forEach(function(zone, i) {
+		if(zone.zoneId === zoneId){
+      zone.setMap(null);
+	  }
+	});
 }
 
