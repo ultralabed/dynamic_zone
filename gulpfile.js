@@ -4,11 +4,11 @@ var browserSync = require('browser-sync');
 
 gulp.task('connect-sync', function() {
   connect.server({
-  	port: 3000,
+  	port: 3003,
   	livereload: true
   }, function (){
     browserSync({
-      proxy: '127.0.0.1:3000'
+      proxy: '127.0.0.1:3003'
     });
   });
 

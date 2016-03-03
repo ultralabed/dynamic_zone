@@ -22,7 +22,7 @@ var polygonInitialize = function(zone) {
     polygonOptions: {
       editable: true,
       clickable: true,
-      fillColor: "#FF0000"
+      fillColor: "#00FF00"
     }
   });
 
@@ -35,77 +35,88 @@ var polygonInitialize = function(zone) {
   google.maps.event.addListener(drawingManager, "overlaycomplete", function(event){
       // console.log("123");
       var polygon = event.overlay;
-      google.maps.event.addListener(polygon,"mouseover",function(){
-       this.setOptions({fillColor: "#00FF00"});
-      });
-
-      google.maps.event.addListener(polygon,"mouseout",function(){
-       this.setOptions({fillColor: "#FF0000"});
-      });
       polygon.zone = zone; //Add polygon with cutom zone id.
-      polygonClick(polygon);
+      // polygonClick(polygon);
 
       polygonArray.push(polygon);
       var vertices = "#" + zone + "_vertices";
       $(vertices).val(event.overlay.getPath().getArray());
       console.log(polygonArray);
       drawingManager.setMap(null);
+
+      google.maps.event.addListener(polygon,"mouseover",function(){
+       this.setOptions({fillColor: "#00FF00"});
+      });
+      google.maps.event.addListener(polygon,"mouseout",function(){
+       this.setOptions({fillColor: "#FF0000"});
+      });
+      google.maps.event.addListener(polygon, 'click', function (){
+        console.log(polygon.zone);
+      });
   });
-
-  var polygonClick = function(polygon) {
-    google.maps.event.addListener(polygon, 'click', function (event) {
-      console.log(polygon.zone);
-    });
-  }
-
-
-  // google.maps.event.addListener(path, "set_at", function(){
-  //     for (i in polygonArray) {
-  //         if (polygonArray[i].getPath() == this) {
-  //             alert('Got it'); //polygonArray[i]
-  //         }
-  //     }
-  // });
 }
 
 
 
   jQuery(document).ready(function($) {
+    var hightPolygon = function(selectedTrID) {
+      console.log(selectedTrID);
+      if (0 < polygonArray.length) {
+        for (var i = 0; i < polygonArray.length; i++) {
+          if(polygonArray[i].zone === selectedTrID){
+            polygonArray[i].setOptions({fillColor: "#00FF00"});
+          }
+          else {
+            polygonArray[i].setOptions({fillColor: "#FF0000"});
+          }
+        }
+      }
+    };
+
+    $('#addZoneInZoneList').click(function() {
+      var id = "ZONE_"+$("#zoneListTable tbody tr").length;
+      var data = '<tr id='+id+'>'
+                + '<td><input class="btn zoneDrawBtn" type="button" value="Draw '+id+'" id="'+id+'_draw_btn"/></td>'
+                + '<td><input type="text" value="0" id="'+id+'_fee" required="true" /></td>'
+                + '<td><input type="text" value="" id="'+id+'_vertices" required="true"/></td>'
+                + '<td><input class="btn zoneDeleteBtn" type="button" value="DELETE" id="'+id+'_delete_btn"/></td>'
+                +'</tr>';
+      $('#zoneListTable > tbody:last-child').append(data);
+    });
+
+    $("#zoneListTable").delegate("tbody tr","click",function(){ //bind tr for changing bk color
+      var selectedTr = $(this)[0];
+      $("tr").css("background-color", "white");
+      $(selectedTr).css("background-color", "#9DE693");
+      hightPolygon(selectedTr.id);
+    });
+
+    $("#zoneListTable").delegate(".zoneDrawBtn", "click", function(e) {
+        var zoneId = $(this).closest('tr').attr('id')
+        polygonInitialize(zoneId);
+    });
+
+    $("#zoneListTable").delegate(".zoneDeleteBtn", "click", function(e) {
+        var selectedTrID = $(this)[0].id;
+        var zoneId = $(this).closest('tr').attr('id');
+        var deletedZone = deletedZoneFromList(polygonArray, zoneId);
+        deletePolygon(deletedZone);
+        $('#'+zoneId).remove();
+
+    });
+
     $('#save').click(function(){
         //iterate polygon zone1_vertices?
     });
 
     $('#zone1_delete').click(function(){
-      // initialize();
-      for (var i = 0; i < polygonArray.length; i++) {
-        if(polygonArray[i].zone === 'zone1'){
-          polygonArray[i].setMap(null);
-          if (i > -1) {
-            polygonArray.splice(i, 1);
-          }
-        }
-      }
-      $('#zone1').attr("disabled", false);
-      $('#zone1_fee').val(null);
-      $('#zone1_vertices').val(null);
-    });
 
-    $('#zone1').click(function(){
-        polygonInitialize('zone1');
-        $('#zone1').attr("disabled", true);
-        $('#zone2').attr("disabled", false);
     });
 
     $('#zone2_delete').click(function(){
-      // initialize();
-      for (var i = 0; i < polygonArray.length; i++) {
-        if(polygonArray[i].zone === 'zone2'){
-          polygonArray[i].setMap(null);
-          if (i > -1) {
-            polygonArray.splice(i, 1);
-          }
-        }
-      }
+      var zoneId = 'zone2';
+      var deletedZone = deletedZoneFromList(polygonArray, zoneId);
+      deletePolygon(deletedZone);
       $('#zone2').attr("disabled", false);
       $('#zone2_fee').val(null);
       $('#zone2_vertices').val(null);
@@ -117,18 +128,18 @@ var polygonInitialize = function(zone) {
         $('#zone2').attr("disabled", true);
     });
 
-      $(".clickable-row").click(function() {
-        $(".clickable-row").css("background-color", "white"); //make all background color white.
-        $(this).css("background-color", "#9DE693"); //make toggle background color yellow
-        if (0 < polygonArray.length) {
-          for (var i = 0; i < polygonArray.length; i++) {
-            if(polygonArray[i].zone === $(this).data("href")){
-              polygonArray[i].setOptions({fillColor: "#00FF00"});
-            }
-            else {
-              polygonArray[i].setOptions({fillColor: "#FF0000"});
-            }
+    $(".clickable-row").click(function() {
+      $(".clickable-row").css("background-color", "white"); //make all background color white.
+      $(this).css("background-color", "#9DE693"); //make toggle background color green
+      if (0 < polygonArray.length) {
+        for (var i = 0; i < polygonArray.length; i++) {
+          if(polygonArray[i].zone === $(this).data("href")){
+            polygonArray[i].setOptions({fillColor: "#00FF00"});
+          }
+          else {
+            polygonArray[i].setOptions({fillColor: "#FF0000"});
           }
         }
-      });
+      }
+    });
   });
