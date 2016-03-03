@@ -16,7 +16,6 @@ var polygonInitialize = function(zoneId) {
 
   }
   else {
-    console.log(drawingManager);
     drawingManager.setMap(null); //clear previous drawing tool
     deletePolygonFromList(polygonArray, zoneId);
     deletedZoneFromList(polygonArray, zoneId);
@@ -72,7 +71,7 @@ var polygonInitialize = function(zoneId) {
       // console.log(selectedTrID);
       if (0 < polygonArray.length) {
         for (var i = 0; i < polygonArray.length; i++) {
-          if(polygonArray[i].zone === selectedTrID){
+          if(polygonArray[i].zoneId === selectedTrID){
             polygonArray[i].setOptions({fillColor: "#00FF00"});
           }
           else {
@@ -112,20 +111,5 @@ var polygonInitialize = function(zoneId) {
         deletedZoneFromList(polygonArray, zoneId);
         $('#'+zoneId).remove();
         console.log(polygonArray);
-    });
-
-    $(".clickable-row").click(function() {
-      $(".clickable-row").css("background-color", "white"); //make all background color white.
-      $(this).css("background-color", "#9DE693"); //make toggle background color green
-      if (0 < polygonArray.length) {
-        for (var i = 0; i < polygonArray.length; i++) {
-          if(polygonArray[i].zone === $(this).data("href")){
-            polygonArray[i].setOptions({fillColor: "#00FF00"});
-          }
-          else {
-            polygonArray[i].setOptions({fillColor: "#FF0000"});
-          }
-        }
-      }
     });
   });
