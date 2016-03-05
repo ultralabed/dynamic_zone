@@ -11,7 +11,7 @@ set :repo_url, 'git@github.com:ultralabed/dynamic_zone.git'
 
 # Default deploy_to directory is /var/www/my_app_name
 # set :deploy_to, '/var/www/my_app_name'
-set :deploy_to, '/var/www/ed/dynamic_zone'
+set :deploy_to, '/var/www/html/ed/dynamic_zone'
 
 set :ssh_options, { :forward_agent => true }
 
