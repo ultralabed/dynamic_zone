@@ -6,8 +6,9 @@
 # server 'example.com', user: 'deploy', roles: %w{app db web}, my_property: :my_value
 # server 'example.com', user: 'deploy', roles: %w{app web}, other_property: :other_value
 # server 'db.example.com', user: 'deploy', roles: %w{db}
-
-
+ask(:password, nil, echo: false)
+server "45.32.58.57", :user => "root", port: 22, password: fetch(:password), :roles => %{web app}
+set :branch, "master"
 
 # role-based syntax
 # ==================

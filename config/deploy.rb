@@ -1,14 +1,19 @@
 # config valid only for current version of Capistrano
 lock '3.4.0'
 
-set :application, 'my_app_name'
-set :repo_url, 'git@example.com:me/my_repo.git'
+
+set :application, 'dynamic_zone'
+set :scm, :git
+set :repo_url, 'git@github.com:ultralabed/dynamic_zone.git'
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
 # set :deploy_to, '/var/www/my_app_name'
+set :deploy_to, '/var/www/ed/dynamic_zone'
+
+set :ssh_options, { :forward_agent => true }
 
 # Default value for :scm is :git
 # set :scm, :git
