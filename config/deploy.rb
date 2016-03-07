@@ -42,9 +42,11 @@ set :ssh_options, { :forward_agent => true }
 namespace :deploy do
 	after :published, :npm_install do
 		on roles(:app) do
-			# execute "cd #{release_path}&&npm install"
+			execute "cd #{release_path}&&npm install"
 		end
 	end
+	before :finished, "daemons:run_hello_world",roles: [:app]
+
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
       # Here we can do anything such as:
