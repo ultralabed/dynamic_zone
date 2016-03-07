@@ -1,7 +1,7 @@
 {
   "name": "zone",
   "version": "1.0.0",
-  "description": "",
+  "description": "hihi",
   "main": "gulpfile.js",
   "dependencies": {
     "http": "0.0.0"
@@ -10,6 +10,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "ed",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ultralabed/dynamic_zone.git"
+  }
 }

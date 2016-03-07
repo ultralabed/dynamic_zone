@@ -40,9 +40,9 @@ set :ssh_options, { :forward_agent => true }
 # set :keep_releases, 5
 
 namespace :deploy do
-	after :updated, :npm_install do
+	after :published, :npm_install do
 		on roles(:app) do
-			execute "cd #{current_path}&&npm install"
+			# execute "cd #{release_path}&&npm install"
 		end
 	end
   after :restart, :clear_cache do
