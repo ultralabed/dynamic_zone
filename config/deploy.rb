@@ -40,7 +40,11 @@ set :ssh_options, { :forward_agent => true }
 # set :keep_releases, 5
 
 namespace :deploy do
-
+	after :updated, :npm_install do
+		on roles(:app) do
+			execute "cd #{current_path}&&npm install"
+		end
+	end
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
       # Here we can do anything such as:
